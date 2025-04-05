@@ -26,12 +26,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <MiniKitProvider>
-        <body>
+      <body>
+        <MiniKitProvider>
           <WorldAppAuth />
           {children}
-        </body>
-      </MiniKitProvider>
+        </MiniKitProvider>
+      </body>
     </html>
   )
 }

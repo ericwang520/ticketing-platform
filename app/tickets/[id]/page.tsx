@@ -5,7 +5,7 @@ import { BottomNavigationBar } from "@/components/bottom-navigation-bar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ArrowLeft, Calendar, Clock, Info, MapPin, AlertTriangle, Ticket, Plane, ChevronRight } from "lucide-react"
-import PayButton from "@/components/pay-button"
+import sendPayment from "@/lib/sendPayment"
 
 // Mock ticket data
 const ticketsData = [
@@ -246,9 +246,8 @@ export default function TicketDetailPage({ params }: { params: { id: string } })
             </div>
           </div>
         </div>
-        <Button className="w-full" size="lg">
+        <Button className="w-full" size="lg" onClick={() => sendPayment()}>
           Buy Now
-          <PayButton />
         </Button>
 
       </div>
