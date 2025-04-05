@@ -24,7 +24,7 @@ const ticketData = {
 export default function TicketDetailPage({ params }: { params: { id: string } }) {
   return (
     <main className="flex min-h-screen flex-col pb-16">
-      <TopNavigationBar />
+      {/* <TopNavigationBar /> */}
 
       <div className="flex-1 px-4 py-6">
         <div className="mb-6 flex items-center">
