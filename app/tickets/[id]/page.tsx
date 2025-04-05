@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ArrowLeft, Calendar, Clock, Info, MapPin, AlertTriangle, Ticket, Plane, ChevronRight } from "lucide-react"
 import handlePay from "@/lib/sendPayment"
+import { useState } from "react"
 
 const ticketsData = [
   {
@@ -269,6 +270,7 @@ const ticketsData = [
 export default function TicketDetailPage({ params }: { params: { id: string } }) {
   // Find the ticket data based on the ID
   const ticket = ticketsData.find((t) => t.id === params.id) || ticketsData[0]
+  const [selectedTicketIndex, setSelectedTicketIndex] = useState(0)
 
   return (
     <main className="flex min-h-screen flex-col pb-safe">
@@ -314,7 +316,11 @@ export default function TicketDetailPage({ params }: { params: { id: string } })
 
         <div className="mb-6 space-y-4">
           {ticket.ticketTypes.map((ticketType, index) => (
-            <Card key={index}>
+            <Card
+              key={index}
+              onClick={() => setSelectedTicketIndex(index)}
+              className={selectedTicketIndex === index ? "border-blue-500 bg-blue-50" : "cursor-pointer"}
+            >
               <CardContent className="p-4">
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex-1 min-w-0">
@@ -404,9 +410,19 @@ export default function TicketDetailPage({ params }: { params: { id: string } })
             </div>
           </div>
         </div>
-        <Button className="w-full" size="lg" onClick={() => handlePay()}>
-          Buy Now
-        </Button>
+     
+       <Button
+         className="w-full"
+         size="lg"
+         onClick={() => {
+           const pricing = ticket.ticketTypes[selectedTicketIndex].price
+           console.log("Selected pricing:", pricing)
+           handlePay(pricing)
+         }}
+       >
+         Buy Now
+       </Button>
+     
 
       </div>
 
