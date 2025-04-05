@@ -316,9 +316,11 @@ export default function TicketDetailPage({ params }: { params: { id: string } })
           {ticket.ticketTypes.map((ticketType, index) => (
             <Card key={index}>
               <CardContent className="p-4">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-medium">{ticketType.type}</h3>
-                  <p className="font-semibold">{ticketType.price} USDC</p>
+                <div className="flex items-center justify-between gap-4">
+                  <div className="flex-1 min-w-0">
+                    <h3 className="font-medium break-words">{ticketType.type}</h3>
+                  </div>
+                  <p className="font-semibold whitespace-nowrap">{ticketType.price} USDC</p>
                 </div>
               </CardContent>
             </Card>
