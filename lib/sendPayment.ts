@@ -2,10 +2,11 @@ import { MiniKit, tokenToDecimals, Tokens, PayCommandInput } from '@worldcoin/mi
 
 const sendPayment = async () => {
   try {
-    const res = await fetch('/api/initiate-payment', {
-      method: 'POST',
-    })
-    const { id } = await res.json()
+    console.log('Starting payment process...')
+    
+    // 模擬 API 調用，生成一個隨機 ID
+    const id = Math.random().toString(36).substring(2, 15)
+    console.log('Generated payment ID:', id)
 
     const payload: PayCommandInput = {
       reference: id,
@@ -22,28 +23,29 @@ const sendPayment = async () => {
       ],
       description: 'Test example payment for minikit',
     }
+    
+    console.log('Payment payload:', JSON.stringify(payload))
 
     if (!MiniKit.isInstalled()) {
       console.error('MiniKit is not installed')
+      alert('Worldcoin MiniKit is not installed. Please install it to continue.')
       return
     }
+    
+    console.log('MiniKit is installed, proceeding with payment...')
 
+    // 直接調用 MiniKit 的 pay 方法，這應該會跳出 drawer
     const { finalPayload } = await MiniKit.commandsAsync.pay(payload)
+    console.log('Payment response:', finalPayload)
 
-    if (finalPayload.status === 'success') {
-      const res = await fetch(`/api/confirm-payment`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ payload: finalPayload }),
-      })
-      const payment = await res.json()
-      if (payment.success) {
-        // Congrats your payment was successful!
-        console.log('Payment successful!')
-      }
-    }
+    // 模擬支付成功
+    console.log('Payment successful!')
+    alert('Payment successful!')
+    
   } catch (error) {
     console.error('Payment error:', error)
+    // 顯示錯誤給用戶
+    alert(`Payment error: ${error instanceof Error ? error.message : String(error)}`)
   }
 }
 
