@@ -3,6 +3,7 @@ import type { Viewport } from 'next'
 import './globals.css'
 import MiniKitProvider from '@/components/minikit-provider'
 import WorldAppAuth from '@/components/world-app-auth'
+import DebugPanel from '@/components/debug-panel'
 
 export function generateViewport(): Viewport {
   return {
@@ -30,6 +31,7 @@ export default function RootLayout({
         <MiniKitProvider>
           <WorldAppAuth />
           {children}
+          <DebugPanel />
         </MiniKitProvider>
       </body>
     </html>
