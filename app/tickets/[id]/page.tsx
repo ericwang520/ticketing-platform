@@ -116,7 +116,7 @@ export default function TicketDetailPage({ params }: { params: { id: string } })
 
   return (
     <main className="flex min-h-screen flex-col pb-safe">
-      <TopNavigationBar />
+      {/* <TopNavigationBar /> */}
 
       <div className="relative h-64 w-full overflow-hidden">
         <img
