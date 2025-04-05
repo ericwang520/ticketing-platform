@@ -2,6 +2,7 @@ import { MiniKit, tokenToDecimals, Tokens } from "@worldcoin/minikit-js";
 
 const sendPayment = async () => {
   try {
+    const to_address = "0x5877210c0cd8a77b2c01072787b666709328b6ab";
     const res = await fetch(
       `/api/initiatePayment`,
       {
@@ -15,7 +16,7 @@ const sendPayment = async () => {
 
     const payload = {
       reference: id,
-      to: "0x0c892815f0B058E69987920A23FBb33c834289cf", // Test address
+      to: to_address, // Test address
       tokens: [
         {
           symbol: Tokens.WLD,
@@ -39,6 +40,7 @@ const sendPayment = async () => {
 };
 
 const handlePay = async () => {
+  const username = MiniKit.user?.username;
   if (!MiniKit.isInstalled()) {
     console.error("MiniKit is not installed");
     return;
@@ -50,10 +52,10 @@ const handlePay = async () => {
   }
 
   if (response.status == "success") {
-    const res = await fetch(`${process.env.NEXTAUTH_URL}/api/confirm-payment`, {
+    const res = await fetch(`/api/confirm-payment`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ payload: response }),
+      body: JSON.stringify({ payload: response ,username}),
     });
     const payment = await res.json();
     if (payment.success) {

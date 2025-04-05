@@ -1,25 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { MiniAppPaymentSuccessPayload } from '@worldcoin/minikit-js'
-import { cookies } from 'next/headers'
+import { getPayment, confirmPayment } from '@/lib/db/payments'
 
 interface IRequestPayload {
 	payload: MiniAppPaymentSuccessPayload
+	username: string
 }
 
 export async function POST(req: NextRequest) {
 	try {
-		const { payload } = (await req.json()) as IRequestPayload
+		const { payload, username } = (await req.json()) as IRequestPayload
 
-		// 從 cookie 中獲取支付參考
-		const cookieStore = await cookies()
-		const reference = cookieStore.get('payment-nonce')?.value
+		// Get the payment reference from our database
+		const payment = await getPayment(payload.transaction_id)
 
-		if (!reference) {
-			return NextResponse.json({ success: false, error: 'No payment reference found' })
+		if (!payment) {
+			return NextResponse.json(
+				{ success: false, error: 'Payment not found' },
+				{ status: 404 }
+			)
 		}
-
 		// 1. 檢查從 mini app 接收的交易是否與我們發送的交易相同
-		if (payload.reference === reference) {
+		if (payload.reference === payment.id) {
 			const response = await fetch(
 				`https://developer.worldcoin.org/api/v2/minikit/transaction/${payload.transaction_id}?app_id=${process.env.APP_ID}`,
 				{
@@ -37,10 +39,11 @@ export async function POST(req: NextRequest) {
 
 			// TODO - missing types
 			const transaction = (await response.json()) as any
-			
+
 			// 2. 這裡我們樂觀地確認交易
 			// 否則，您可以輪詢直到 status == mined
-			if (transaction.reference === reference && transaction.status !== 'failed') {
+			if (transaction.reference === payment.id && transaction.status !== 'failed') {
+				await confirmPayment(payload.transaction_id, username, payment.to_address, payment.token, payment.amount)
 				return NextResponse.json({ success: true })
 			} else {
 				return NextResponse.json({ success: false, error: 'Transaction verification failed' })
