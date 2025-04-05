@@ -246,17 +246,12 @@ export default function TicketDetailPage({ params }: { params: { id: string } })
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Fixed button container with padding */}
-      <div
-        className="fixed left-0 right-0 bg-background px-4 pb-4 pt-0 border-t"
-        style={{ bottom: "calc(4rem + env(safe-area-inset-bottom))" }}
-      >
         <Button className="w-full" size="lg">
           Buy Now
         </Button>
+
       </div>
+
 
       <BottomNavigationBar activeTab="home" />
     </main>

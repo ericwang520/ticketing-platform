@@ -94,8 +94,8 @@ export default function OrderPage() {
   const [selectedTicket, setSelectedTicket] = useState<(typeof purchasedTickets)[0] | null>(null)
 
   return (
-    <main className="flex min-h-screen flex-col pb-safe">
-      <TopNavigationBar />
+    <main className="flex min-h-screen flex-col">
+      {/* <TopNavigationBar /> */}
 
       <div className="flex-1 flex flex-col">
         <h1 className="px-4 py-6 text-2xl font-bold">My Tickets</h1>

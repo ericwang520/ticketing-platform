@@ -80,13 +80,13 @@ export function TicketModal({ ticket, onClose }: TicketModalProps) {
           transform: `translateY(${translateY}px)`,
           transition: isDragging ? "none" : "transform 0.3s ease",
         }}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
+        // onTouchStart={handleTouchStart}
+        // onTouchMove={handleTouchMove}
+        // onTouchEnd={handleTouchEnd}
       >
-        <div className="absolute left-0 right-0 top-0 flex justify-center cursor-grab active:cursor-grabbing">
+        {/* <div className="absolute left-0 right-0 top-0 flex justify-center cursor-grab active:cursor-grabbing">
           <div className="h-1.5 w-16 rounded-full bg-muted-foreground/20 my-2"></div>
-        </div>
+        </div> */}
 
         {/* X button in top right corner */}
         <Button
