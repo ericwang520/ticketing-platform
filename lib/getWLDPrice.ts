@@ -1,7 +1,7 @@
 const getWLDPrice = async () => {
     try {
         const res = await fetch(
-            `https://app-backend.worldcoin.dev/public/v1/miniapps/prices?cryptoCurrencies=WLD&fiatCurrencies=USD`, {
+            `https://app-backend.worldcoin.dev/public/v1/miniapps/prices?cryptoCurrencies=WLD,USDCE&fiatCurrencies=USD`, {
             method: 'GET',
         })
         
@@ -10,6 +10,7 @@ const getWLDPrice = async () => {
         }
         
         const data = await res.json()
+        console.log(data);
         
         // Check if the response has the expected structure
         if (!data?.result?.prices?.WLD?.USD?.amount || !data?.result?.prices?.WLD?.USD?.decimals) {
