@@ -55,15 +55,7 @@ const handlePay = async (price:number) => {
       return { success: false, error: "MiniKit is not installed" };
     }
     
-    // 檢查用戶是否已登錄
-    if (!MiniKit.user) {
-      console.error("User not logged in");
-      return { success: false, error: "User not logged in" };
-    }
     
-    // 使用用戶名作為標識，如果不存在則使用 'unknown'
-    const userIdentifier = MiniKit.user.username || 'unknown';
-    console.log(`Initiating payment for ${price} by user: ${userIdentifier}`);
     
     const sendPaymentResponse = await sendPayment(price);
     
@@ -83,7 +75,7 @@ const handlePay = async (price:number) => {
       const res = await fetch(`/api/confirm-payment`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ payload: response, username: userIdentifier }),
+        body: JSON.stringify({ payload: response }),
       });
       
       if (!res.ok) {

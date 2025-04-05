@@ -51,7 +51,6 @@ export async function initiatePayment(
 
 export async function confirmPayment(
     transaction_id: string,
-    user_id: string,
     to_address: string,
     token: string,
     amount: number
@@ -60,8 +59,7 @@ export async function confirmPayment(
     try {
         const data = await sql`
             UPDATE payments 
-            SET user_id = ${user_id},
-                to_address = ${to_address},
+            SET to_address = ${to_address},
                 token = ${token},
                 amount = ${amount},
                 status = 'completed',
