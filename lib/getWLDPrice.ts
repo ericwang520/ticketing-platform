@@ -10,7 +10,6 @@ const getWLDPrice = async () => {
         }
         
         const data = await res.json()
-        console.log(data);
         
         // Check if the response has the expected structure
         if (!data?.result?.prices?.WLD?.USD?.amount || !data?.result?.prices?.WLD?.USD?.decimals) {
@@ -19,8 +18,8 @@ const getWLDPrice = async () => {
         
         const amount = data.result.prices.WLD.USD.amount
         const decimals = data.result.prices.WLD.USD.decimals
-        const price = convertPrice(amount, decimals)
-        return price;
+
+        return amount;
     } catch (error) {
         console.error('Error fetching WLD price:', error);
         throw error;
