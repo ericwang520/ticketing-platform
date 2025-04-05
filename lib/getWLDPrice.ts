@@ -7,6 +7,7 @@ const getWLDPrice = async () => {
     const amount = data.result.prices.WLD.USD.amount
     const decimals = data.result.prices.WLD.USD.decimals
     const price = convertPrice(amount, decimals)
+    console.log(price);
     return price;
 }
 function convertPrice(amount: string, decimals: number): number {

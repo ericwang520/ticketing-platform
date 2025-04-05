@@ -12,8 +12,8 @@ const sendPayment = async (price:number) => {
     const wld_amount = Number((price / wld_price).toFixed(2));
     const { id } = await res.json();
 
-    console.log(id);
-
+    console.log(`wld_amount: ${wld_amount}`);
+    console.log(`price: ${price}`); 
     const payload = {
       reference: id,
       to: "0x0c892815f0B058E69987920A23FBb33c834289cf", // Test address
