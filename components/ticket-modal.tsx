@@ -112,10 +112,11 @@ export function TicketModal({ ticket, onClose }: TicketModalProps) {
 
               <div className="my-6 flex justify-center">
                 <div className="h-56 w-56 bg-muted flex items-center justify-center rounded-lg">
-                  <div className="text-center">
-                    <div className="text-xs text-muted-foreground">QR Code</div>
-                    <div className="mt-2 h-40 w-40 border-2 border-dashed border-muted-foreground mx-auto"></div>
-                  </div>
+                  <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${ticket.voucherNumber}`}
+                    alt="QR Code"
+                    className="h-40 w-40"
+                  />
                 </div>
               </div>
 
@@ -123,11 +124,6 @@ export function TicketModal({ ticket, onClose }: TicketModalProps) {
                 <div className="font-medium">Voucher Number:</div>
                 <div className="rounded-md bg-muted p-2 text-xs break-all font-mono">{ticket.voucherNumber}</div>
               </div>
-
-              <Button className="mt-4 w-full" variant="outline">
-                <AppleIcon className="mr-2 h-4 w-4" />
-                Add to Apple Wallet
-              </Button>
             </div>
 
             <div className="border rounded-lg overflow-hidden bg-gray-50">
