@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import type { Viewport } from 'next'
-import Script from 'next/script'
 import './globals.css'
 import MiniKitProvider from '@/components/minikit-provider'
 import WorldAppAuth from '@/components/world-app-auth'
+import ErudaDebug from '@/components/eruda-debug'
 
 export function generateViewport(): Viewport {
   return {
@@ -27,16 +27,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <Script src="https://cdn.jsdelivr.net/npm/eruda"></Script>
-        <Script id="eruda-init">
-          {`eruda.init();`}
-        </Script>
-      </head>
       <body>
         <MiniKitProvider>
           <WorldAppAuth />
           {children}
+          <ErudaDebug />
         </MiniKitProvider>
       </body>
     </html>
