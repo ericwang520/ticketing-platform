@@ -1,30 +1,31 @@
 import { MiniKit, tokenToDecimals, Tokens } from "@worldcoin/minikit-js";
-import getWLDPrice from "./getWLDPrice";
-const sendPayment = async (price:number) => {
+
+const sendPayment = async (price: number) => {
   try {
+    const wldPrice = 0.732;
+    const usdcePrice = 1;
     const res = await fetch(
       `/api/initiatePayment`,
       {
         method: "POST",
       }
     );
-    const wld_price = await getWLDPrice();
-    const wld_amount = Number((price / wld_price).toFixed(2));
+
     const { id } = await res.json();
 
-    console.log(`wld_amount: ${wld_amount}`);
-    console.log(`price: ${price}`); 
+    console.log(id);
+
     const payload = {
       reference: id,
       to: "0x0c892815f0B058E69987920A23FBb33c834289cf", // Test address
       tokens: [
         {
           symbol: Tokens.WLD,
-          token_amount: tokenToDecimals(wld_amount, Tokens.WLD).toString(),
+          token_amount: tokenToDecimals(price / wldPrice, Tokens.WLD).toString(),
         },
         {
           symbol: Tokens.USDCE,
-          token_amount: tokenToDecimals(price, Tokens.USDCE).toString(),
+          token_amount: tokenToDecimals(price * usdcePrice, Tokens.USDCE).toString(),
         },
       ],
       description: "Watch this is a test",
@@ -39,7 +40,7 @@ const sendPayment = async (price:number) => {
   }
 };
 
-const handlePay = async (price:number) => {
+const handlePay = async (price: number) => {
   if (!MiniKit.isInstalled()) {
     console.error("MiniKit is not installed");
     return;
