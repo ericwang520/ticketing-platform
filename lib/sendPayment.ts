@@ -4,100 +4,68 @@ import getWLDPrice from "./getWLDPrice";
 const sendPayment = async (price:number) => {
   try {
     const to_address = "0x5877210c0cd8a77b2c01072787b666709328b6ab";
-    const WLD_price = await getWLDPrice();
-    const wld_amount = Number((price / WLD_price).toFixed(2));
-    
-    // First initiate the payment to get a reference ID
     const res = await fetch(
       `/api/initiatePayment`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ price, wld_amount })
       }
     );
-    
-    if (!res.ok) {
-      throw new Error(`Failed to initiate payment: ${res.status}`);
-    }
-    
+    const WLD_price = await getWLDPrice();
     const { id } = await res.json();
-    console.log("Payment reference ID:", id);
+    const wld_amount = Number((price / WLD_price).toFixed(2));
+    console.log(id);
 
     const payload = {
       reference: id,
-      to: to_address,
+      to: to_address, // Test address
       tokens: [
         {
           symbol: Tokens.WLD,
-          token_amount: tokenToDecimals(wld_amount, Tokens.WLD).toString(),
-        }
+          token_amount: tokenToDecimals(0.5, Tokens.WLD).toString(),
+        },
+        {
+          symbol: Tokens.USDCE,
+          token_amount: tokenToDecimals(0.1, Tokens.USDCE).toString(),
+        },
       ],
-      description: `Payment for service - ${wld_amount} WLD`,
+      description: "Watch this is a test",
     };
-    
     if (MiniKit.isInstalled()) {
       return await MiniKit.commandsAsync.pay(payload);
     }
     return null;
   } catch (error) {
-    console.error("Error sending payment", error);
+    console.log("Error sending payment", error);
     return null;
   }
 };
 
 const handlePay = async (price:number) => {
-  try {
-    if (!MiniKit.isInstalled()) {
-      console.error("MiniKit is not installed");
-      return { success: false, error: "MiniKit is not installed" };
-    }
-    
-    
-    
-    const sendPaymentResponse = await sendPayment(price);
-    
-    if (!sendPaymentResponse) {
-      console.error("Payment failed - no response from MiniKit");
-      return { success: false, error: "Payment failed - no response from MiniKit" };
-    }
-    
-    const response = sendPaymentResponse?.finalPayload;
-    if (!response) {
-      console.error("Payment failed - no final payload");
-      return { success: false, error: "Payment failed - no final payload" };
-    }
+  const username = MiniKit.user?.username;
+  if (!MiniKit.isInstalled()) {
+    console.error("MiniKit is not installed");
+    return;
+  }
+  const sendPaymentResponse = await sendPayment(price);
+  const response = sendPaymentResponse?.finalPayload;
+  if (!response) {
+    return;
+  }
 
-    if (response.status === "success") {
-      console.log("Payment successful, confirming with backend");
-      const res = await fetch(`/api/confirm-payment`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ payload: response }),
-      });
-      
-      if (!res.ok) {
-        console.error(`Failed to confirm payment: ${res.status}`);
-        return { success: false, error: `Failed to confirm payment: ${res.status}` };
-      }
-      
-      const payment = await res.json();
-      if (payment.success) {
-        console.log("Payment confirmed successfully!");
-        return { success: true };
-      } else {
-        console.error("Payment confirmation failed:", payment.error || "Unknown error");
-        return { success: false, error: payment.error || "Payment confirmation failed" };
-      }
+  if (response.status == "success") {
+    const res = await fetch(`/api/confirm-payment`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ payload: response ,username}),
+    });
+    const payment = await res.json();
+    if (payment.success) {
+      // Congrats your payment was successful!
+      console.log("SUCESS!");
     } else {
-      console.error("Payment failed with status:", response.status);
-      return { success: false, error: `Payment failed with status: ${response.status}` };
+      // Payment failed
+      console.log("FAILED!");
     }
-  } catch (error: any) {
-    console.error("Unexpected error in handlePay:", error);
-    return { success: false, error: `Unexpected error: ${error.message || 'Unknown error'}` };
   }
 };
 

@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
 			// 2. 這裡我們樂觀地確認交易
 			// 否則，您可以輪詢直到 status == mined
 			if (transaction.reference === payment.id && transaction.status !== 'failed') {
-				await confirmPayment(payload.transaction_id, payment.to_address, payment.token, payment.amount)
+				await confirmPayment(payload.transaction_id , payment.to_address, payment.token, payment.amount)
 				return NextResponse.json({ success: true })
 			} else {
 				return NextResponse.json({ success: false, error: 'Transaction verification failed' })
