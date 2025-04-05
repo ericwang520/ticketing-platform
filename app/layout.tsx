@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import type { Viewport } from 'next'
 import './globals.css'
- 
+import MiniKitProvider from '@/components/minikit-provider'
+import WorldAppAuth from '@/components/world-app-auth'
+
 export function generateViewport(): Viewport {
   return {
     width: 'device-width',
@@ -24,7 +26,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <MiniKitProvider>
+        <body>
+          <WorldAppAuth />
+          {children}
+        </body>
+      </MiniKitProvider>
     </html>
   )
 }

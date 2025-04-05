@@ -1,11 +1,11 @@
 "use client"
 
 import Link from "next/link"
-import { TopNavigationBar } from "@/components/top-navigation-bar"
 import { BottomNavigationBar } from "@/components/bottom-navigation-bar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ArrowLeft, Calendar, Clock, Info, MapPin, AlertTriangle, Ticket, Plane, ChevronRight } from "lucide-react"
+import PayButton from "@/components/pay-button"
 
 // Mock ticket data
 const ticketsData = [
@@ -248,6 +248,7 @@ export default function TicketDetailPage({ params }: { params: { id: string } })
         </div>
         <Button className="w-full" size="lg">
           Buy Now
+          <PayButton />
         </Button>
 
       </div>
