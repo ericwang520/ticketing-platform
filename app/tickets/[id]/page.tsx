@@ -417,7 +417,7 @@ export default function TicketDetailPage({ params }: { params: { id: string } })
          onClick={() => {
            const pricing = ticket.ticketTypes[selectedTicketIndex].price
            console.log("Selected pricing:", pricing)
-           handlePay()
+           handlePay(pricing)
          }}
        >
          Buy Now

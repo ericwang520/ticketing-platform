@@ -1,40 +1,50 @@
-const getWLDPrice = async () => {
+import axios from 'axios';
+
+const fetchWLDPriceData = async () => {
     try {
-        const res = await fetch(
-            `https://app-backend.worldcoin.dev/public/v1/miniapps/prices?cryptoCurrencies=WLD,USDCE&fiatCurrencies=USD`, {
-            method: 'GET',
-        })
-        
-        if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        
-        const data = await res.json()
-        
-        // Check if the response has the expected structure
+        const response = await axios.get(
+            'https://app-backend.worldcoin.dev/public/v1/miniapps/prices',
+            {
+                params: {
+                    cryptoCurrencies: 'WLD,USDCE',
+                    fiatCurrencies: 'USD',
+                },
+            }
+        );
+
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching WLD price data:', error);
+        throw error;
+    }
+};
+
+const parseWLDPrice = (data: any): number => {
+    try {
         if (!data?.result?.prices?.WLD?.USD?.amount || !data?.result?.prices?.WLD?.USD?.decimals) {
             throw new Error('Invalid response format');
         }
-        
-        const amount = data.result.prices.WLD.USD.amount
-        const decimals = data.result.prices.WLD.USD.decimals
 
-        return amount;
+        const amount = data.result.prices.WLD.USD.amount;
+        const decimals = data.result.prices.WLD.USD.decimals;
+
+        console.log(`Fetched WLD Price - Amount: ${amount}, Decimals: ${decimals}`);
+
+        return convertPrice(amount, decimals);
     } catch (error) {
-        console.error('Error fetching WLD price:', error);
+        console.error('Error parsing WLD price:', error);
         throw error;
     }
-}
+};
+
+const getWLDPrice = async (): Promise<number> => {
+    const data = await fetchWLDPriceData();
+    return parseWLDPrice(data);
+};
 
 function convertPrice(amount: string, decimals: number): number {
-    // 將字符串轉換為數字
     const numericAmount = parseFloat(amount);
-
-    // 根據 decimals 值計算實際價格
-    // 例如：如果 amount 是 1510763，decimals 是 6
-    // 則實際價格是 1510763 / 10^6 = 1.510763
     return numericAmount / Math.pow(10, decimals);
 }
 
-export default getWLDPrice
-
+export default getWLDPrice;
