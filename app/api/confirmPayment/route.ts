@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { MiniAppPaymentSuccessPayload } from '@worldcoin/minikit-js'
+import { cookies } from 'next/headers'
 
 interface IRequestPayload {
 	payload: MiniAppPaymentSuccessPayload
@@ -9,35 +10,46 @@ export async function POST(req: NextRequest) {
 	try {
 		const { payload } = (await req.json()) as IRequestPayload
 
-		// // IMPORTANT: Here we should fetch the reference you created in /initiate-payment to ensure the transaction we are verifying is the same one we initiated
-		// const reference = getReferenceFromDB()
+		// 從 cookie 中獲取支付參考
+		const cookieStore = await cookies()
+		const reference = cookieStore.get('payment-nonce')?.value
 
-		// // 1. Check that the transaction we received from the mini app is the same one we sent
-		// if (payload.reference === reference) {
-		// 	const response = await fetch(
-		// 		`https://developer.worldcoin.org/api/v2/minikit/transaction/${payload.transaction_id}?app_id=${process.env.APP_ID}`,
-		// 		{
-		// 			method: 'GET',
-		// 			headers: {
-		// 				Authorization: `Bearer ${process.env.DEV_PORTAL_API_KEY}`,
-		// 			},
-		// 		}
-		// 	)
-		// 	const transaction = await response.json()
+		if (!reference) {
+			return NextResponse.json({ success: false, error: 'No payment reference found' })
+		}
 
-		// 	// 2. Here we optimistically confirm the transaction.
-		// 	// Otherwise, you can poll until the status == mined
-		// 	if (transaction.reference == reference && transaction.status != 'failed') {
-		// 		return NextResponse.json({ success: true })
-		// 	} else {
-		// 		return NextResponse.json({ success: false })
-		// 	}
-		// }
-		
-		// For now, we'll just return success if we received a payload
-		return NextResponse.json({ success: true })
+		// 1. 檢查從 mini app 接收的交易是否與我們發送的交易相同
+		if (payload.reference === reference) {
+			const response = await fetch(
+				`https://developer.worldcoin.org/api/v2/minikit/transaction/${payload.transaction_id}?app_id=${process.env.APP_ID}`,
+				{
+					method: 'GET',
+					headers: {
+						Authorization: `Bearer ${process.env.DEV_PORTAL_API_KEY}`,
+					},
+				}
+			)
+
+			if (!response.ok) {
+				console.error('Failed to fetch transaction:', response.status, response.statusText)
+				return NextResponse.json({ success: false, error: 'Failed to verify transaction' })
+			}
+
+			// TODO - missing types
+			const transaction = (await response.json()) as any
+			
+			// 2. 這裡我們樂觀地確認交易
+			// 否則，您可以輪詢直到 status == mined
+			if (transaction.reference === reference && transaction.status !== 'failed') {
+				return NextResponse.json({ success: true })
+			} else {
+				return NextResponse.json({ success: false, error: 'Transaction verification failed' })
+			}
+		} else {
+			return NextResponse.json({ success: false, error: 'Reference mismatch' })
+		}
 	} catch (error) {
 		console.error('Error confirming payment:', error)
-		return NextResponse.json({ success: false, error: 'Failed to confirm payment' }, { status: 500 })
+		return NextResponse.json({ success: false, error: 'Internal server error' }, { status: 500 })
 	}
 }
