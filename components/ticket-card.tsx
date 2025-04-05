@@ -14,7 +14,7 @@ export function TicketCard({ id, title, price, image }: TicketCardProps) {
     <Link href={`/tickets/${id}`} className="block h-full">
       <Card className="flex h-full flex-col overflow-hidden transition-all hover:shadow-md">
         <div className="aspect-[3/2] w-full overflow-hidden">
-          <img src={image || "/placeholder.svg"} alt={title} className="h-full w-full object-cover grayscale" />
+          <img src={image || "/placeholder.svg"} alt={title} className="h-full w-full object-cover" />
         </div>
         <CardContent className="flex-grow p-3">
           <h3 className="line-clamp-2 font-medium">{title}</h3>

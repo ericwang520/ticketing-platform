@@ -4,7 +4,6 @@ import './globals.css'
 import MiniKitProvider from '@/components/minikit-provider'
 import WorldAppAuth from '@/components/world-app-auth'
 import ErudaDebug from '@/components/eruda-debug'
-
 export function generateViewport(): Viewport {
   return {
     width: 'device-width',
