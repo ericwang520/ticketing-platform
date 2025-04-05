@@ -1,23 +1,20 @@
 'use client'
 
 import { useEffect } from 'react'
-import Script from 'next/script'
+import Eruda from "eruda"
 
 export default function ErudaDebug() {
   useEffect(() => {
     // Initialize Eruda after the component mounts
     if (typeof window !== 'undefined') {
       // @ts-ignore
-      window.eruda?.init();
+      Eruda.init()
     }
   }, []);
 
   return (
     <>
-      <Script 
-        src="https://cdn.jsdelivr.net/npm/eruda" 
-        strategy="afterInteractive"
-      />
+
     </>
   )
 } 
