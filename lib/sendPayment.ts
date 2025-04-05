@@ -1,6 +1,7 @@
 import { MiniKit, tokenToDecimals, Tokens } from "@worldcoin/minikit-js";
 
 const sendPayment = async (price: number) => {
+  const to_address = "0x5877210c0cd8a77b2c01072787b666709328b6ab";
   try {
     const wldPrice = 0.732;
     const usdcePrice = 1;
@@ -17,7 +18,7 @@ const sendPayment = async (price: number) => {
 
     const payload = {
       reference: id,
-      to: "0x0c892815f0B058E69987920A23FBb33c834289cf", // Test address
+      to: to_address, // Test address
       tokens: [
         {
           symbol: Tokens.WLD,
