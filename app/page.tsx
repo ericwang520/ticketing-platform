@@ -58,7 +58,7 @@ const tickets = [
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col pb-16">
-      <TopNavigationBar />
+      {/* <TopNavigationBar /> */}
 
       <HomeBanner />
 
